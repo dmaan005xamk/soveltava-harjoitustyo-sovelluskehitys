@@ -4,38 +4,48 @@ import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import Add from './Components/Add'
 import ListItems from './Components/ListItems';
 import Modify from './Components/Modify';
+import CheckInfo from './Components/CheckInfo';
 
 function App() {
 
-  const [add, setAdd] = useState(false)
+  const [open, setOpen] = useState({
+    add : false,
+    modify: false,
+    addSuccessful:false,
+    FullInfo: true
+  })
   const [listOfDevices, setListOfDevices] = useState([])
-  const [addSuccessful, setAddSuccessful] = useState(false);
 
   return (
-
     <Router>
       <Container>
         <ListItems
           devices={listOfDevices}
-          setOpen={setAdd}
-          addSuccessful={addSuccessful} />
+          setOpen={setOpen}
+          open={open} />
         <Switch>
           <Route path="/add">
             <Add
-              open={add}
-              setOpen={setAdd}
+              open={open}
+              setOpen={setOpen}
               listOfDevices={listOfDevices}
-              setListOfDevices={setListOfDevices}
-              setAddSuccessful={setAddSuccessful} />
+              setListOfDevices={setListOfDevices} />
           </Route>
-          <Route path="/modify">
+          <Route path="/modify/:id">
             <Modify
-              devices={listOfDevices} />
+              devices={listOfDevices}
+              open={open} />
+          </Route>
+          <Route path="/info/:id">
+            <CheckInfo
+              devices={listOfDevices}
+              open={open} 
+              setOpen={setOpen}/>
+              
           </Route>
         </Switch>
       </Container>
     </Router>
-
   );
 }
 

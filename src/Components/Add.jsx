@@ -59,17 +59,8 @@ export default function FormDialog({ setAddSuccessful, open, setOpen, listOfDevi
             setTimeout(() => { setDisabled(false) }, 1500)
         }
     };
-    const modifyButton = (id) => {
-        return (
-            <Button
-                variant='contained'
-                component={Link}
-                to={`/modify/${id}`}>
-                Muokkaa
-            </Button>)
-    }
     const handleClose = () => {
-        setOpen(false);
+        setOpen({...open, add:false});
         setTimeout(() => {
             formInfo.current = {}
             setTimeOfHandOut(new Date())
@@ -93,19 +84,17 @@ export default function FormDialog({ setAddSuccessful, open, setOpen, listOfDevi
     });
     const handleSubmit = (e) => {
         e.preventDefault()
-        setAddSuccessful(true)
-        setTimeout(() => { setAddSuccessful(false) }, 2000)
+        setOpen({...open, addSuccessful: true})
+        setTimeout(() => { setOpen({...open, addSuccessful: false}) }, 2000)
         formInfo.current.TimeOfHandOut = format(TimeOfHandOut.getTime(), "d.M.yyyy HH:mm")
-        formInfo.current.id = uuid()
-        formInfo.current.modify =
-
-            setListOfDevices([...listOfDevices, formInfo.current])
+        formInfo.current.id = uuid()      
+        setListOfDevices([...listOfDevices, formInfo.current])
         handleClose()
         setDisabled(true)
         console.log(formInfo.current.modify)
     }
     return (
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open.add} onClose={handleClose}>
             <form onSubmit={handleSubmit}>
                 <Box sx={{ width: '100%', paddingTop: "5%" }}>
                     <Stepper activeStep={steps.step} alternativeLabel>

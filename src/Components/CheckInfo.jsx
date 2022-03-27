@@ -1,24 +1,35 @@
 import { DateTimePicker, LocalizationProvider } from '@mui/lab'
-import { Checkbox, Dialog, DialogContent, DialogContentText, DialogTitle, FormControlLabel, TextField } from '@mui/material'
+import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, TextField } from '@mui/material'
 import { Box } from '@mui/system'
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import React from 'react'
-import {useParams} from 'react-router-dom'
+import {useParams, useHistory} from 'react-router-dom'
 
-const Modify = ({ devices, open }) => {
+const CheckInfo = ({ devices, open, setOpen }) => {
 
     const {id} = useParams()
+    const history = useHistory()
 
-    const activeDevice = devices.filter((device) => {
+    const chosenDevice = devices.filter((device) => {
         return (device.id === id);
     })[0];
 
+    const handleClose = () => {
+        setOpen({...open, modify:false, FullInfo:false});
+        setTimeout(() => {
+            // formInfo.current = {}
+            history.push("/")
+        }, 500)
+    };
+
     return (
-        <Dialog open={open.modify}>
-            <DialogTitle>Muokkaa</DialogTitle>
+        <Dialog 
+        onClose={handleClose}
+        open={open.FullInfo}>
+            <DialogTitle>Kirjauksen tiedot</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Tässä näkymässä voit muokata vapaasti tämän lainaan tiedot
+                    Alla löydät kirjaukseen lisätyt tiedot.
                 </DialogContentText>
                 <Box
                     style={{
@@ -31,37 +42,44 @@ const Modify = ({ devices, open }) => {
                         name="FullName"
                         label="Käyttäjän nimi"
                         variant="standard"
-                        value={activeDevice.FullName}
+                        disabled
+                        value={chosenDevice.FullName}
                         style={{
                             flexBasis: "45%"
                         }}
                     />
                     <TextField
+                        disabled
+
                         margin="dense"
                         name="City"
                         label="Paikkakunta"
                         variant="standard"
-                        value={activeDevice.City}
+                        value={chosenDevice.City}
                         style={{
                             flexBasis: "45%"
                         }}
                     />
                     <TextField
+
+                        disabled
                         margin="dense"
                         name="Address"
                         label="Osoite"
                         variant="standard"
-                        value={activeDevice.Address}
+                        value={chosenDevice.Address}
                         style={{
                             flexBasis: "45%"
                         }}
                     />
                     <TextField
+
                         margin="dense"
                         name="fabricator"
                         label="Laitevalmistaja"
                         variant="standard"
-                        value={activeDevice.fabricator}
+                        value={chosenDevice.fabricator}
+                        disabled
                         style={{
                             flexBasis: "45%"
                         }}
@@ -70,7 +88,8 @@ const Modify = ({ devices, open }) => {
 
                         margin="dense"
                         name="model"
-                        value={activeDevice.model}
+                        value={chosenDevice.model}
+                        disabled
                         label="Laitemalli"
                         variant="standard"
                         style={{
@@ -82,7 +101,8 @@ const Modify = ({ devices, open }) => {
                         name="SerialNumber"
                         label="Sarjanumero"
                         variant="standard"
-                        value={activeDevice.SerialNumber}
+                        value={chosenDevice.SerialNumber}
+                        disabled
                         style={{
                             flexBasis: "45%"
                         }}
@@ -96,15 +116,15 @@ const Modify = ({ devices, open }) => {
                                     marginTop: "24px"
                                 }} variant="standard"
                                 {...props} />}
-                            value={activeDevice.TimeOfHandOut}
-
+                            value={chosenDevice.timeOfHandOut}
+                            disabled
                         />
                     </LocalizationProvider>
                     <FormControlLabel
-
+                        disabled
                         name="FilledForm"
                         control={<Checkbox
-                        checked={activeDevice?.FilledForm} />}
+                            checked={chosenDevice?.FilledForm} />}
                         label="Luovutuslomake täytetty"
                         style={{
                             flexBasis: "45%",
@@ -112,9 +132,20 @@ const Modify = ({ devices, open }) => {
                         }}
                     />
                 </Box>
+                <DialogActions>
+                    <Button 
+                    variant="outlined"
+                    onClick={handleClose}>
+                        Peruuta
+                        </Button>
+                    <Button 
+                    variant="contained">
+                        Muokkaa
+                        </Button>
+                </DialogActions>
             </DialogContent>
         </Dialog>
     )
 }
 
-export default Modify
+export default CheckInfo
