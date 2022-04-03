@@ -6,17 +6,19 @@ import React from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 
-const CheckInfo = ({ devices, open, setOpen }) => {
+const CheckInfoReturned = ({ devices, open, setOpen }) => {
 
     const { id } = useParams()
     const history = useHistory()
 
-    const chosenDevice = devices.listOfDevices.filter((device) => {
+    const chosenDevice = devices.devicesReturned.filter((device) => {
         return (device.id === id);
     })[0];
 
+    console.log(devices)
+
     const handleClose = () => {
-        setOpen({ ...open, modify: false, FullInfo: false });
+        setOpen({ ...open, modify: false, FullInfoReturned: false });
         setTimeout(() => {
             // formInfo.current = {}
             history.push("/")
@@ -26,7 +28,7 @@ const CheckInfo = ({ devices, open, setOpen }) => {
     return (
         <Dialog
             onClose={handleClose}
-            open={open.FullInfo}>
+            open={open.FullInfoReturned}>
             <DialogTitle>Kirjauksen tiedot</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -51,7 +53,6 @@ const CheckInfo = ({ devices, open, setOpen }) => {
                     />
                     <TextField
                         disabled
-
                         margin="dense"
                         name="City"
                         label="Paikkakunta"
@@ -62,7 +63,6 @@ const CheckInfo = ({ devices, open, setOpen }) => {
                         }}
                     />
                     <TextField
-
                         disabled
                         margin="dense"
                         name="Address"
@@ -74,7 +74,6 @@ const CheckInfo = ({ devices, open, setOpen }) => {
                         }}
                     />
                     <TextField
-
                         margin="dense"
                         name="fabricator"
                         label="Laitevalmistaja"
@@ -111,48 +110,40 @@ const CheckInfo = ({ devices, open, setOpen }) => {
                     <LocalizationProvider
                         dateAdapter={AdapterDateFns}>
                         <DateTimePicker
+                            label="Luovutettu"
                             renderInput={(props) => <TextField
                                 style={{
                                     flexBasis: "45%",
-                                    marginTop: "24px"
+                                    marginTop: "12px"
                                 }} variant="standard"
                                 {...props} />}
                             value={chosenDevice.TimeOfHandOutInMS}
                             disabled
                         />
+                        <DateTimePicker
+                            label="Palautettu"
+                            renderInput={(props) => <TextField
+
+                                style={{
+                                    flexBasis: "45%",
+                                    marginTop: "12px"
+                                }} variant="standard"
+                                {...props} />}
+                            value={chosenDevice.TimeOfReturnInMS}
+                            disabled
+                        />
                     </LocalizationProvider>
-                    <FormControlLabel
-                        disabled
-                        name="FilledForm"
-                        control={<Checkbox
-                            checked={chosenDevice?.FilledForm} />}
-                        label="Luovutuslomake täytetty"
-                        style={{
-                            flexBasis: "45%",
-                            justifyContent: "center"
-                        }} />
                 </Box>
             </DialogContent>
             <DialogActions>
                 <Button
-
-                    variant="outlined"
-                    onClick={handleClose}>
-                    Peruuta
-                </Button>
-                <Button
                     variant="contained"
-                    component={Link}
-                    style={{
-                        marginLeft: "8px"
-                    }}
-                    to={`/modify/${chosenDevice.id}`}
-                    onClick={() => setOpen({ ...open, modify: true })}>
-                    Muokkaa
+                    onClick={handleClose}>
+                    Sulje
                 </Button>
             </DialogActions>
         </Dialog>
     )
 }
 
-export default CheckInfo
+export default CheckInfoReturned

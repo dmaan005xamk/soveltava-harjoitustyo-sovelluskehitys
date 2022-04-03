@@ -26,8 +26,7 @@ const SummaryInfo = ({ title, handle, currentInfo, TimeOfHandOut }) => {
                         value={currentInfo.FullName}
                         style={{
                             flexBasis: "45%"
-                        }}
-                    />
+                        }} />
                     <TextField
                         disabled
 

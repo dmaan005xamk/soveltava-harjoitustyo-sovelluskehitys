@@ -1,12 +1,12 @@
 import { DateTimePicker, LocalizationProvider } from '@mui/lab'
-import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, TextField } from '@mui/material'
+import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, TextField, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import React from 'react'
 import { useParams, useHistory, Link } from 'react-router-dom'
 import { format } from 'date-fns';
 
-const Modify = ({ devices, open, setOpen, setDevices }) => {
+const Returned = ({ devices, setDevices, open, setOpen }) => {
 
     const { id } = useParams()
     const history = useHistory()
@@ -15,15 +15,12 @@ const Modify = ({ devices, open, setOpen, setDevices }) => {
         return (device.id === id);
     })[0];
 
-    const [TimeOfHandOut, setTimeOfHandOut] = React.useState(activeDevice.TimeOfHandOutInMS)
+    const [TimeOfReturn, setTimeOfReturn] = React.useState(new Date())
     const formInfo = React.useRef({ ...activeDevice })
 
     const handleClose = () => {
-        setOpen({ ...open, modify: false });
-        setTimeout(() => {
-            // formInfo.current = {}
-            history.push("/")
-        }, 500)
+        setOpen({ ...open, returned: false });
+        history.push("/")
     };
 
     const handleInput = (e) => {
@@ -33,24 +30,24 @@ const Modify = ({ devices, open, setOpen, setDevices }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-
+        formInfo.current.TimeOfReturnInMS = TimeOfReturn
+        formInfo.current.TimeOfReturn = format(TimeOfReturn, "d.M.yyyy HH:mm")
         const helper = devices.listOfDevices.filter((device) => {
             return (device.id !== id)
         });
-        formInfo.current.TimeOfHandOutInMS = TimeOfHandOut
-        formInfo.current.TimeOfHandOut = format(TimeOfHandOut, "d.M.yyyy HH:mm")
-        setDevices({ ...devices, listOfDevices: [...helper, formInfo.current] })
+        console.log(formInfo.current)
+        setDevices({ ...devices, devicesReturned: [...devices.devicesReturned, formInfo.current], listOfDevices: [...helper] })
         handleClose()
     }
     return (
         <Dialog
-            open={open.modify}
+            open={open.returned}
             onClose={handleClose}>
             <form onSubmit={handleSubmit}>
-                <DialogTitle>Muokkaa</DialogTitle>
+                <DialogTitle>Palautuksen tiedot</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Tässä näkymässä voit muokata vapaasti tämän kirjauksen tiedot
+                        Tässä näkymässä voit kuitata työaseman palautusta!
                     </DialogContentText>
                     <Box
                         style={{
@@ -60,6 +57,7 @@ const Modify = ({ devices, open, setOpen, setDevices }) => {
                         }}>
                         <TextField
                             margin="dense"
+                            disabled
                             name="FullName"
                             label="Käyttäjän nimi"
                             variant="standard"
@@ -72,6 +70,7 @@ const Modify = ({ devices, open, setOpen, setDevices }) => {
                         <TextField
                             margin="dense"
                             name="City"
+                            disabled
                             label="Paikkakunta"
                             variant="standard"
                             onChange={handleInput}
@@ -83,6 +82,7 @@ const Modify = ({ devices, open, setOpen, setDevices }) => {
                         <TextField
                             margin="dense"
                             name="Address"
+                            disabled
                             label="Osoite"
                             variant="standard"
                             onChange={handleInput}
@@ -93,6 +93,7 @@ const Modify = ({ devices, open, setOpen, setDevices }) => {
                         />
                         <TextField
                             margin="dense"
+                            disabled
                             name="fabricator"
                             label="Laitevalmistaja"
                             variant="standard"
@@ -106,6 +107,7 @@ const Modify = ({ devices, open, setOpen, setDevices }) => {
 
                             margin="dense"
                             name="model"
+                            disabled
                             defaultValue={activeDevice.model}
                             label="Laitemalli"
                             variant="standard"
@@ -118,6 +120,7 @@ const Modify = ({ devices, open, setOpen, setDevices }) => {
                             margin="dense"
                             name="SerialNumber"
                             label="Sarjanumero"
+                            disabled
                             onChange={handleInput}
                             variant="standard"
                             defaultValue={activeDevice.SerialNumber}
@@ -125,6 +128,14 @@ const Modify = ({ devices, open, setOpen, setDevices }) => {
                                 flexBasis: "45%"
                             }}
                         />
+                        <Typography
+                            component="div"
+                            style={{
+                                marginTop: "30px",
+                                display: "flex",
+                                flexBasis: "45%",
+                                justifyContent: "flex-end"
+                            }}>Palautettu:</Typography>
                         <LocalizationProvider
                             dateAdapter={AdapterDateFns}>
                             <DateTimePicker
@@ -134,21 +145,10 @@ const Modify = ({ devices, open, setOpen, setDevices }) => {
                                         marginTop: "24px"
                                     }} variant="standard"
                                     {...props} />}
-                                value={TimeOfHandOut}
-
+                                value={TimeOfReturn}
+                                onChange={setTimeOfReturn}
                             />
                         </LocalizationProvider>
-                        <FormControlLabel
-                            name="FilledForm"
-                            disabled
-                            control={<Checkbox
-                                checked={activeDevice?.FilledForm} />}
-                            label="Luovutuslomake täytetty"
-                            onChange={handleInput}
-                            style={{
-                                flexBasis: "45%",
-                                justifyContent: "center"
-                            }} />
                     </Box>
                 </DialogContent>
                 <DialogActions>
@@ -159,8 +159,9 @@ const Modify = ({ devices, open, setOpen, setDevices }) => {
                     </Button>
                     <Button
                         variant="contained"
-                        type='submit'>
-                        Tallenna
+                        type='submit'
+                        color="success">
+                        Vahvista
                     </Button>
                 </DialogActions>
             </form>
@@ -168,4 +169,4 @@ const Modify = ({ devices, open, setOpen, setDevices }) => {
     )
 }
 
-export default Modify
+export default Returned

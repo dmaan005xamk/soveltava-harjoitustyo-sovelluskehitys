@@ -15,11 +15,18 @@ import { useHistory } from 'react-router-dom'
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 
-export default function FormDialog({ setAddSuccessful, open, setOpen, listOfDevices, setListOfDevices }) {
+export default function FormDialog({ open, setOpen, devices, setDevices }) {
 
     const formInfo = React.useRef({})
     const history = useHistory()
 
+    const [steps, setSteps] = React.useState({
+        list: [
+            'Laitteen tiedot',
+            'Käyttäjän tiedot',
+            'Yhteenveto'
+        ], step: 0
+    });
     const [disabled, setDisabled] = React.useState(true)
     const [error, setError] = React.useState({})
     const [TimeOfHandOut, setTimeOfHandOut] = React.useState(new Date())
@@ -28,6 +35,7 @@ export default function FormDialog({ setAddSuccessful, open, setOpen, listOfDevi
         let errors = {}
         if (steps.step === 0) {
             if (!formInfo.current.SerialNumber) {
+                console.log(errors)
                 errors = { ...errors, SerialNumber: "Sarjanumero on syötettävä" }
             }
             if (Object.entries(errors).length > 0) {
@@ -60,7 +68,7 @@ export default function FormDialog({ setAddSuccessful, open, setOpen, listOfDevi
         }
     };
     const handleClose = () => {
-        setOpen({...open, add:false});
+        setOpen({ ...open, add: false });
         setTimeout(() => {
             formInfo.current = {}
             setTimeOfHandOut(new Date())
@@ -71,27 +79,19 @@ export default function FormDialog({ setAddSuccessful, open, setOpen, listOfDevi
 
     };
     const handleInput = (e) => {
-        let toAdd = (e.target.type === "checkbox") ? e.target.checked : e.target.value;
+        const toAdd = (e.target.type === "checkbox") ? e.target.checked : e.target.value;
         formInfo.current[e.target.name] = toAdd
-        console.log(formInfo.current)
     }
-    const [steps, setSteps] = React.useState({
-        list: [
-            'Laitteen tiedot',
-            'Käyttäjän tiedot',
-            'Yhteenveto'
-        ], step: 0
-    });
+
     const handleSubmit = (e) => {
         e.preventDefault()
-        setOpen({...open, addSuccessful: true})
-        setTimeout(() => { setOpen({...open, addSuccessful: false}) }, 2000)
+        formInfo.current.TimeOfHandOutInMS = TimeOfHandOut.getTime()
         formInfo.current.TimeOfHandOut = format(TimeOfHandOut.getTime(), "d.M.yyyy HH:mm")
-        formInfo.current.id = uuid()      
-        setListOfDevices([...listOfDevices, formInfo.current])
+        formInfo.current.id = uuid()
+        console.log(devices)
+        setDevices({ ...devices, listOfDevices: [...devices.listOfDevices, formInfo.current] })
         handleClose()
         setDisabled(true)
-        console.log(formInfo.current.modify)
     }
     return (
         <Dialog open={open.add} onClose={handleClose}>
