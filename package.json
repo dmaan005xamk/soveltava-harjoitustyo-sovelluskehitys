@@ -1,7 +1,7 @@
 {
   "name": "laiterekisteri",
   "version": "0.1.0",
-  "homepage": ".",
+  "homepage": "/laiterekisteri",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.8.2",
