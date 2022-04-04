@@ -57,95 +57,94 @@ function App() {
   }
 
   return (
-    <Router>
-      <Container>
-        <Typography variant="h4"
-          sx={{
-            width: "50%",
-            marginLeft: "10%"
-          }}>Laiterekisteri</Typography>
-        <Typography
-          varitant="body1"
-          sx={{
-            width: "50%",
-            marginLeft: "10%",
-            marginTop: "2%",
-            marginBottom: "2%"
-          }}>
-          Päätin luoda laiterekisterin lopputyönä sillä työpaikassani olen aina
-          kaivannut laiterekisterin kirjataakseni ylös kenellä työasemat
-          ovat käytössä ja missä ne ovat.
-        </Typography>
-        <Box style={{
-          display: "flex",
-          justifyContent: "center"
+
+    <Container>
+      <Typography variant="h4"
+        sx={{
+          width: "50%",
+          marginLeft: "10%"
+        }}>Laiterekisteri</Typography>
+      <Typography
+        varitant="body1"
+        sx={{
+          width: "50%",
+          marginLeft: "10%",
+          marginTop: "2%",
+          marginBottom: "2%"
         }}>
-          <Tabs
-            value={open.tab}
-            onChange={(e, value) => {
-              setOpen({ ...open, tab: value })
-            }}>
-            <Tab label="Lainattu"
-              sx={{
-                minWidth: "200px"
-              }} />
-            <Tab label="Palautettu"
-              sx={{
-                minWidth: "200px"
-              }} />
-          </Tabs>
-        </Box>
-        <TabPanel value={open.tab} index={0}>
-          <ListItems
-            devices={devices.listOfDevices}
-            setOpen={setOpen}
+        Päätin luoda laiterekisterin lopputyönä sillä työpaikassani olen aina
+        kaivannut laiterekisterin kirjataakseni ylös kenellä työasemat
+        ovat käytössä ja missä ne ovat.
+      </Typography>
+      <Box style={{
+        display: "flex",
+        justifyContent: "center"
+      }}>
+        <Tabs
+          value={open.tab}
+          onChange={(e, value) => {
+            setOpen({ ...open, tab: value })
+          }}>
+          <Tab label="Lainattu"
+            sx={{
+              minWidth: "200px"
+            }} />
+          <Tab label="Palautettu"
+            sx={{
+              minWidth: "200px"
+            }} />
+        </Tabs>
+      </Box>
+      <TabPanel value={open.tab} index={0}>
+        <ListItems
+          devices={devices.listOfDevices}
+          setOpen={setOpen}
+          open={open}
+        />
+      </TabPanel>
+      <TabPanel value={open.tab} index={1}>
+        <ListItemsReturned
+          devices={devices.devicesReturned}
+          setOpen={setOpen}
+          open={open}
+        />
+      </TabPanel>
+      <Switch>
+        <Route path="/add">
+          <Add
             open={open}
-          />
-        </TabPanel>
-        <TabPanel value={open.tab} index={1}>
-          <ListItemsReturned
-            devices={devices.devicesReturned}
             setOpen={setOpen}
+            devices={devices}
+            setDevices={setDevices} />
+        </Route>
+        <Route path="/modify/:id">
+          <Modify
+            devices={devices}
             open={open}
-          />
-        </TabPanel>
-        <Switch>
-          <Route path="/add">
-            <Add
-              open={open}
-              setOpen={setOpen}
-              devices={devices}
-              setDevices={setDevices} />
-          </Route>
-          <Route path="/modify/:id">
-            <Modify
-              devices={devices}
-              open={open}
-              setOpen={setOpen}
-              setDevices={setDevices} />
-          </Route>
-          <Route path="/info/:id">
-            <CheckInfo
-              devices={devices}
-              open={open}
-              setOpen={setOpen} />
-          </Route>
-          <Route path="/InfoReturned/:id">
-            <CheckInfoReturned
-              devices={devices}
-              open={open}
-              setOpen={setOpen} />
-          </Route>
-          <Route path="/returned/:id">
-            <Returned
-              devices={devices}
-              open={open}
-              setOpen={setOpen}
-              setDevices={setDevices} />
-          </Route>
-        </Switch>
-      </Container>
-    </Router >
+            setOpen={setOpen}
+            setDevices={setDevices} />
+        </Route>
+        <Route path="/info/:id">
+          <CheckInfo
+            devices={devices}
+            open={open}
+            setOpen={setOpen} />
+        </Route>
+        <Route path="/InfoReturned/:id">
+          <CheckInfoReturned
+            devices={devices}
+            open={open}
+            setOpen={setOpen} />
+        </Route>
+        <Route path="/returned/:id">
+          <Returned
+            devices={devices}
+            open={open}
+            setOpen={setOpen}
+            setDevices={setDevices} />
+        </Route>
+      </Switch>
+    </Container>
   );
 }
 
